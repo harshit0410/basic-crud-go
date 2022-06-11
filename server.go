@@ -6,12 +6,19 @@ import (
 	"JobWorker/model"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //Required for MySQL dialect
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	initDB()
 	log.Println("Starting the HTTP server on port 8090")
@@ -24,10 +31,10 @@ func main() {
 func initDB() {
 	config :=
 		database.Config{
-			ServerName: "localhost:3306",
-			User:       "root",
-			Password:   "12345",
-			DB:         "job_scheduler",
+			ServerName: os.Getenv("SERVERNAME"),
+			User:       os.Getenv("USER"),
+			Password:   os.Getenv("PASSWORD"),
+			DB:         os.Getenv("DB"),
 		}
 
 	err := database.Connect(config)
